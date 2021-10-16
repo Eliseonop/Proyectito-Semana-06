@@ -81,59 +81,57 @@ let listaPlatillos = [
  */
 
 // obtenemos el main
-let main = document.getElementById("contenido");
+let divContenido = document.getElementById("contenido");
 
-listaPlatillos.forEach(function (item) {
-  // creamos la tarjeta y otros elementos
-  let divTarjeta = document.createElement("div");
-  //
-  let divImagen = document.createElement("div");
-  let imagen = document.createElement("img");
-  let divTexto = document.createElement("div");
-  let divPrecio = document.createElement("div");
-  //Enviamos los atributos a lso quenecesite
-  imagen.setAttribute("src", item.imagen);
-  imagen.setAttribute("width", "200");
-  imagen.setAttribute("height", "250");
-  //Agregamos las clases
-  divTarjeta.classList.add("tarjeta");
-  divPrecio.classList.add("precio");
-  divTexto.classList.add("texto");
-  //Para agilizar el codigo creamos con innerHTML algunos elementos y llamos algunas propiedades del
-  divTexto.innerHTML = `<h4>${item.nombre}</h4>
-  <p>${item.descripcion}</p>`;
-  divPrecio.innerHTML = `<span> Precio: s/${item.precio}</span>
-  <button class="btn-agregar"> agregar </button>`;
-  //aqui agregamos los hijos a sus padres
-  divImagen.appendChild(imagen);
-  main.appendChild(divTarjeta);
-  divTarjeta.appendChild(divImagen);
-  divTarjeta.appendChild(divTexto);
-  divTexto.appendChild(divPrecio);
-  //////////////////////////////////
-  let tbody = document.querySelector(".carrito");
-  // let item = document.querySelector("h4");
-  let botonAgregar = document.querySelector(".btn-agregar");
-  // agregamso un evento a boton
-  
-  botonAgregar.addEventListener("click", function(){
-      //creamos los elementos
-      let tr = document.createElement("tr");
-      tr.innerHTML = `<td>${item.nombre}</td>
-                      <td><span><span></td>
-                      <td>${item.precio}</td>
-                      <td>12</td>` 
-      tbody.appendChild(tr)
-      let contador = 0
-      // console.log("ñe diste clik");
-      contador++
-      
-  
-  })
+let carrito = [];
+
+function dibujarTarjetas() {
+    //va a representar el HTML de las tarjetas que quiero representar pero en un string
+    let htmlTarjetas = "";
+    listaPlatillos.forEach(function (plato) {
+        //backticks `template string`
+        htmlTarjetas =
+            htmlTarjetas +
+            `<div class="tarjeta">
+				<div class="imagen">
+					<img src="${plato.imagen}">
+				</div>
+				<div class="texto">
+					<h4>${plato.nombre}</h4>
+					<p>${plato.descripcion}</p>
+					<div class="precio">
+						<span>S/ ${plato.precio}</span>
+						<button class="btn-agregar" data-idplato="${plato.id}">
+							Agregar
+						</button>
+					</div>
+				</div>
+			</div>`;
+    });
+    divContenido.innerHTML = htmlTarjetas;
+}
+
+dibujarTarjetas();
+
+//OBteniendo botones agregar
+
+let botonesAgregar = document.querySelectorAll(".btn-agregar");
+
+botonesAgregar.forEach(function (boton) {
+    boton.addEventListener("click", function () {
+        //getAttribute me da el valor de un atribute que indiquemos
+        let idObtenido = +boton.getAttribute("data-idplato");
+        // console.log(idObtenido);
+        let platoEncontrado = buscarPlatoPorId(idObtenido);
+        // console.table(platoEncontrado);
+        carrito.push(platoEncontrado);
+        console.log(carrito);
+    });
 });
-// * 2. OPCIONAL (cuando de click en el boton agregar hacer que eso se sume al carrito)
-//adquirimso el carrito y otros elementos
-//creamos una funcion para agregar al carrito   ///item//	Cantidad	/P.Unit.	/SubTotal
-function agregarCarrito(params) {
 
+function buscarPlatoPorId(id) {
+    let platilloEncontrado = listaPlatillos.find(function (plato) {
+        return plato.id == id;
+    });
+    return platilloEncontrado;
 }
